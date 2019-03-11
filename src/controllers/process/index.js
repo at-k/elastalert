@@ -2,6 +2,7 @@ import { spawn, spawnSync } from 'child_process';
 import config from '../../common/config';
 import Logger from '../../common/logger';
 import { Status } from '../../common/status';
+import { join as joinPath } from 'path';
 
 let logger = new Logger('ProcessController');
 
@@ -16,6 +17,11 @@ export default class ProcessController {
      * @private
      */
     this._process = null;
+
+    this._s3_bucket = process.env.S3_BUCKET_NAME;
+
+    let path_tmp = config.get('rulesPath');
+    this._rule_path =  path_tmp.relative ? joinPath(config.get('elastalertPath'), path_tmp.path) : path_tmp.path;
   }
 
   get status() {
@@ -102,6 +108,9 @@ export default class ProcessController {
       logger.error(data.toString());
     });
 
+    // sync rule dir with s3 bucket
+    this.sync_s3();
+
     // Set listeners for ElastAlert exit
     this._process.on('exit', (code) => {
       if (code === 0) {
@@ -135,5 +144,16 @@ export default class ProcessController {
       // Do not do anything if ElastAlert is not running
       logger.info('ElastAlert is not running');
     }
+  }
+
+  sync_s3() {
+    var res = {};
+    if (this._s3_bucket) {
+      var syncResult = spawnSync('aws', ['s3', 'sync', 's3://'+this._s3_bucket, this._rule_path, '--delete']);
+      res = syncResult.stdout.toString()
+    } else {
+      res = 'S3_BUCKET_NAME is not set'
+    }
+    return res;
   }
 }
