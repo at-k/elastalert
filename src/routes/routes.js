@@ -16,6 +16,8 @@ import configGetHandler from '../handlers/config/get';
 import configPostHandler from '../handlers/config/post';
 import metadataHandler from '../handlers/metadata/get';
 import mappingHandler from '../handlers/mapping/get';
+import syncGetHandler from '../handlers/sync/get';
+import syncPostHandler from '../handlers/sync/post';
 
 /**
  * A server route.
@@ -86,6 +88,11 @@ let routes = [
     path: 'mapping/:index',
     method: ['GET'],
     handler: [mappingHandler]
+  },
+  {
+    path: 'sync',
+    method: ['GET', 'POST'],
+    handler: [syncGetHandler, syncPostHandler]
   }
 ];
 
