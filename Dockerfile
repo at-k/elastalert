@@ -31,6 +31,16 @@ ENV TZ Etc/UTC
 
 RUN apk add --update --no-cache curl tzdata python2 make libmagic
 
+RUN apk -v --update add \
+        py-pip \
+        groff \
+        less \
+        mailcap \
+        && \
+    pip install --upgrade awscli==1.14.5 s3cmd==2.0.1 python-magic && \
+    apk -v --purge del py-pip && \
+    rm /var/cache/apk/*
+
 COPY --from=py-ea /usr/lib/python2.7/site-packages /usr/lib/python2.7/site-packages
 COPY --from=py-ea /opt/elastalert /opt/elastalert
 COPY --from=py-ea /usr/bin/elastalert* /usr/bin/
