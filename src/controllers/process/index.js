@@ -10,6 +10,7 @@ export default class ProcessController {
 
   constructor() {
     this._elastalertPath = config.get('elastalertPath');
+    this._onExitCallbacks = [];
     this._status = Status.IDLE;
 
     /**
@@ -22,6 +23,10 @@ export default class ProcessController {
 
     let path_tmp = config.get('rulesPath');
     this._rule_path =  path_tmp.relative ? joinPath(config.get('elastalertPath'), path_tmp.path) : path_tmp.path;
+  }
+
+  onExit(onExitCallback) {
+    this._onExitCallbacks.push(onExitCallback);
   }
 
   get status() {
@@ -44,15 +49,15 @@ export default class ProcessController {
 
     // Create ElastAlert index if it doesn't exist yet
     logger.info('Creating index');
-    var indexCreate = spawnSync('python', ['-m', 'elastalert.create_index', '--index', 'elastalert_status', '--old-index', ''], {
+    var indexCreate = spawnSync('python', ['-m', 'elastalert.create_index', '--index', config.get('writeback_index'), '--old-index', ''], {
       cwd: this._elastalertPath
     });
 
     // Redirect stdin/stderr to logger
-    if (indexCreate.stdout.toString() !== '') {
+    if (indexCreate.stdout && indexCreate.stdout.toString() !== '') {
       logger.info(indexCreate.stdout.toString());
     }
-    if (indexCreate.stderr.toString() !== '') {
+    if (indexCreate.stderr && indexCreate.stderr.toString() !== '') {
       logger.error(indexCreate.stderr.toString());
     }
 
@@ -121,6 +126,12 @@ export default class ProcessController {
         this._status = Status.ERROR;
       }
       this._process = null;
+
+      this._onExitCallbacks.map(function(onExitCallback) {
+        if (onExitCallback !== null) {
+          onExitCallback();
+        }
+      });
     });
 
     // Set listener for ElastAlert error

@@ -18,6 +18,7 @@ import metadataHandler from '../handlers/metadata/get';
 import mappingHandler from '../handlers/mapping/get';
 import syncGetHandler from '../handlers/sync/get';
 import syncPostHandler from '../handlers/sync/post';
+import searchHandler from '../handlers/search/get';
 
 /**
  * A server route.
@@ -69,7 +70,8 @@ let routes = [
     path: 'test',
     method: 'POST',
     handler: testPostHandler
-  }, {
+  },
+  {
     path: 'config',
     method: ['GET', 'POST'],
     handler: [configGetHandler, configPostHandler]
@@ -93,6 +95,11 @@ let routes = [
     path: 'sync',
     method: ['GET', 'POST'],
     handler: [syncGetHandler, syncPostHandler]
+  },
+  {
+    path: 'search/:index',
+    method: ['POST'],
+    handler: [searchHandler]
   }
 ];
 

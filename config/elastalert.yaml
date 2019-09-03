@@ -1,9 +1,10 @@
 # The elasticsearch hostname for metadata writeback
 # Note that every rule can have its own elasticsearch host
-es_host: localhost
+es_host: "search-k8s-production-ihkd7734paf5m5m3uo4zan7eai.ap-northeast-1.es.amazonaws.com"
+# es_host: "search-k8s-staging-fgypc75yzd3f4yrgq6x5n6wuza.ap-northeast-1.es.amazonaws.com"
 
 # The elasticsearch port
-es_port: 9200
+es_port: 443
 
 # This is the folder that contains the rule yaml files
 # Any .yaml file will be loaded as a rule
@@ -23,7 +24,7 @@ buffer_time:
 #es_url_prefix: elasticsearch
 
 # Connect with TLS to elasticsearch
-#use_ssl: True
+use_ssl: True
 
 # Verify TLS certificates
 #verify_certs: True
