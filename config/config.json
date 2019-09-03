@@ -14,7 +14,7 @@
     "relative": true,
     "path": "/rule_templates"
   },
-  es_host: "search-k8s-production-ihkd7734paf5m5m3uo4zan7eai.ap-northeast-1.es.amazonaws.com",
+  "es_host": "search-k8s-production-ihkd7734paf5m5m3uo4zan7eai.ap-northeast-1.es.amazonaws.com",
   "es_port": 443,
   "writeback_index": "elastalert_status"
 }

@@ -82,7 +82,7 @@ export default class ElastalertServer {
         self._fileSystemController.createDirectoryIfNotExists(self.getDataFolder()).catch(function (error) {
           logger.error('Error creating data folder with error:', error);
         });
-        
+
         logger.info('Server listening on port ' + config.get('port'));
 
         let wss = listen(config.get('wsport'));
